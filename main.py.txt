@@ -1,0 +1,40 @@
+天気連動型服装推薦ボット 制作マニュアル
+
+Step 4：コード実行ノード（判定ロジック）
+Pythonを使って、「気温データの抽出」と「アイコン付きの服装分岐」を一括で行います。
+
+入力変数: api_response （値: HTTP > body）
+
+出力変数:
+    1. result_temp (String)
+    2. result_clothing (String)
+
+Pythonコード:
+import json
+
+def main(api_response):
+    try:
+        data = json.loads(api_response)
+    except:
+        return {"result_temp": "0", "result_clothing": "判定不能"}
+
+    try:
+        # 今日の最高気温を取得
+        temp = data['daily']['temperature_2m_max'][0]
+    except (KeyError, IndexError, TypeError):
+        temp = 0
+
+    # アイコン付きで分岐
+    clothing = ""
+    if temp > 20:
+        clothing = "👕 Tシャツ"
+    elif temp > 10:
+        clothing = "🥼 長袖"
+    else:
+        clothing = "🧥 コート"
+
+    # 文字列にして返す
+    return {
+        "result_temp": str(temp),
+        "result_clothing": clothing
+    }

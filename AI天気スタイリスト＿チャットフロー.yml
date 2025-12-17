@@ -1,0 +1,349 @@
+app:
+  description: '都市名を入れるだけ。
+
+    今の気温を調べて、ぴったりの服装とおすすめ理由をサクッと教えます。'
+  icon: 🤖
+  icon_background: '#D1E0FF'
+  mode: advanced-chat
+  name: AI天気スタイリスト＿チャットフロー
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/gemini:0.7.0@0d2058fc3e1a7aa93a3749d59d93bdfee25eeb873352ff943918ba6b5bc15ac9
+    version: null
+kind: app
+version: 0.5.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: start
+        targetType: llm
+      id: 1765861495415-llm
+      source: '1765861495415'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: http-request
+      id: llm-source-1765862500519-target
+      selected: false
+      source: llm
+      sourceHandle: source
+      target: '1765862500519'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1765862500519-source-1765862981452-target
+      source: '1765862500519'
+      sourceHandle: source
+      target: '1765862981452'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: llm
+      id: 1765862981452-source-1765866835509-target
+      source: '1765862981452'
+      sourceHandle: source
+      target: '1765866835509'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1765866835509-source-1765870111889-target
+      source: '1765866835509'
+      sourceHandle: source
+      target: '1765870111889'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: ユーザー入力
+        type: start
+        variables: []
+      height: 73
+      id: '1765861495415'
+      position:
+        x: 0
+        y: 58
+      positionAbsolute:
+        x: 0
+        y: 58
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+            {{#sys.query#}}
+
+            {{#sys.files#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.5-pro
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 5423d03a-90ce-4703-80fb-29818bb8b494
+          role: system
+          text: 'あなたはAPI URL生成専門のエンジニアです。
+
+            ユーザーの入力（sys.query）から「対象の都市名」だけを読み取り、対応する緯度(latitude)と経度(longitude)を特定してください。
+
+            もし「〜の天気を教えて」「〜県」のような文章で入力されても、都市名（地名）だけを抽出して処理してください。
+
+
+            以下のOpen-Meteo公式仕様に基づいてURLを生成し、出力してください。
+
+
+            【URLのひな形】
+
+            https://api.open-meteo.com/v1/forecast?latitude=【緯度】&longitude=【経度】&daily=temperature_2m_max&timezone=Asia%2FTokyo&forecast_days=1
+
+
+            【出力ルール】
+
+            余計な説明やMarkdown記号（```など）は一切含めず、完成したURL文字列のみを出力してください。'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: llm
+      position:
+        x: 342
+        y: 51
+      positionAbsolute:
+        x: 342
+        y: 51
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        headers: ''
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTP リクエスト
+        type: http-request
+        url: '{{#llm.text#}}'
+        variables: []
+      height: 124
+      id: '1765862500519'
+      position:
+        x: 684
+        y: 32
+      positionAbsolute:
+        x: 684
+        y: 32
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "import json\n\ndef main(api_response):\n    # Step 3のHTTPノードから受け取った結果（文字列）を\n\
+          \    # Pythonで扱えるデータ（JSON）に変換します\n    try:\n        data = json.loads(api_response)\n\
+          \    except:\n        # 万が一データが壊れていた場合の安全策\n        return {\"result_temp\"\
+          : \"0\", \"result_clothing\": \"判定不能\"}\n\n    # 【重要】Step 2で設定した「daily（日次予報）」から最高気温を取り出します\n\
+          \    try:\n        # dailyデータはリスト（配列）なので [0] で「今日」のデータを指名します\n        temp\
+          \ = data['daily']['temperature_2m_max'][0]\n    except (KeyError, IndexError,\
+          \ TypeError):\n        # URLの設定ミスなどでデータが見つからない場合は、安全のため0度扱いにします\n      \
+          \  temp = 0\n    \n    # 課題の要件（分岐ルール）を実行\n    # ★ここにアイコン（絵文字）を追加しました\n \
+          \   clothing = \"\"\n    if temp > 20:\n        # 20度より高い（21度以上）\n     \
+          \   clothing = \"\U0001F455 Tシャツ\"\n    elif temp > 10:\n        # 11度 〜\
+          \ 20度\n        clothing = \"\U0001F97C 長袖\"\n    else:\n        # 10度以下（10度含む）\n\
+          \        clothing = \"\U0001F9E5 コート\"\n    \n    # 次のノードへ渡す「お土産」をパッケージします\n\
+          \    return {\n        \"result_temp\": str(temp),  # 数字を「文字」に変換して返す（エラー回避）\n\
+          \        \"result_clothing\": clothing\n    }"
+        code_language: python3
+        outputs:
+          result_clothing:
+            children: null
+            type: string
+          result_temp:
+            children: null
+            type: string
+        selected: false
+        title: コード実行
+        type: code
+        variables:
+        - value_selector:
+          - '1765862500519'
+          - body
+          value_type: string
+          variable: api_response
+      height: 52
+      id: '1765862981452'
+      position:
+        x: 1026
+        y: 69
+      positionAbsolute:
+        x: 1026
+        y: 69
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.5-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: bebdad46-ecae-4a81-a3b7-1503c1416d7a
+          role: system
+          text: "あなたはアパレル業界で長年バイヤーや店頭スタッフを経験した、プロのファッションアドバイザーです。 \n以下の気象データに基づき、ファッション誌や人気アパレルブログのような「プロ視点のアドバイス」をファッションについて知識がない中学生にも理解できるように作成してください。\n\
+            \n【入力データ】\n- 予想最高気温: {{#1765862981452.result_temp#}}度\n- 推奨アイテム:{{#1765862981452.result_clothing#}}\
+            \ \n\n【指示】\n1. 最高気温が{{#1765862981452.result_temp#}}度に適した、{{#1765862981452.result_clothing#}}を使った具体的なスタイリングを提案してください。\n\
+            2. 単にアイテムを勧めるだけでなく、「素材感（リネン、ウールなど）」「色合わせ」「レイヤード（重ね着）のコツ」「小物の使い方」など、プロならではのテクニックを1つ盛り込んでください。\n\
+            \ 3. 文体は、親しみやすくもお洒落な「ショップ店員の接客トーク」や「ファッション動画の解説」のようなトーンで。\n 4. 120文字以内で20文字程度で改行し見やすくまとめてください。"
+        - id: 5e89f733-a47e-46ae-a451-567a13ea1556
+          role: user
+          text: 提案をお願いします
+        selected: true
+        title: LLM 2
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: '1765866835509'
+      position:
+        x: 1368
+        y: 51
+      positionAbsolute:
+        x: 1368
+        y: 51
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        answer: "今日の最高気温は {{#1765862981452.result_temp#}}度の予報です。\n\nおすすめコーデ：\n {{#1765862981452.result_clothing#}}\n\
+          \n【スタイリストからのアドバイス】\n{{#1765866835509.text#}}"
+        selected: false
+        title: 回答
+        type: answer
+        variables: []
+      height: 188
+      id: '1765870111889'
+      position:
+        x: 1710
+        y: 0
+      positionAbsolute:
+        x: 1710
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: -487.041154784623
+      y: 248.75652867340918
+      zoom: 0.426796625584181
+  rag_pipeline_variables: []
